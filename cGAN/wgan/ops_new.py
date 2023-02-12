@@ -1,4 +1,7 @@
 import tensorflow as tf
+# import tensorflow.compat.v1 as tf
+# tf.disable_v2_behavior()
+
 from tensorflow.python.framework import ops
 
 def batch_norm(input_, train=True, epsilon=1e-5, momentum = 0.9, name="batch_norm"):

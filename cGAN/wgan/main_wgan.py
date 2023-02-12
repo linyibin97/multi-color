@@ -4,8 +4,9 @@ import pprint
 
 from model_wgan import WGAN
 
-# import tensorflow as tf
 import tensorflow as tf
+# import tensorflow.compat.v1 as tf
+# tf.disable_v2_behavior()
 
 tf.app.flags.DEFINE_string("devices", "gpu:0", "Which gpu to be used")
 
@@ -14,6 +15,8 @@ tf.app.flags.DEFINE_string("dataset", "lsun_64", "The name of dataset [celebA, l
 tf.app.flags.DEFINE_string("dir_tag", "wgan_RMS", "dir_tag for sample_dir and checkpoint_dir")
 tf.app.flags.DEFINE_string("result_dir", "./result/", "Where to save the checkpoint and sample")
 tf.app.flags.DEFINE_boolean("visualize", False, "True for visualizing, False for nothing [False]")
+tf.app.flags.DEFINE_string("sample_dir", "./result/samples/", "Where to save the checkpoint and sample")
+tf.app.flags.DEFINE_string("checkpoint_dir", "./result/checkpoint/", "Where to save the checkpoint and sample")
 
 ##training setting
 tf.app.flags.DEFINE_boolean("is_train", True, "True for training, False for testing [False]")
@@ -53,12 +56,12 @@ tf.app.flags.DEFINE_float("d_learning_rate", 0.0002, "Learning rate of for optim
 tf.app.flags.DEFINE_float("g_learning_rate", 0.0001, "Learning rate of for optimizer")
 
 
-FLAGS = tf.app.flags.FLAGS
+# FLAGS = tf.app.flags.FLAGS
+FLAGS = tf.flags.FLAGS
 
 def main(_):
 
-    pprint.PrettyPrinter().pprint(FLAGS.__flags)
-
+    print(FLAGS)
     FLAGS.sample_dir = FLAGS.result_dir + 'samples/' + FLAGS.dataset + '_' + FLAGS.dir_tag
     FLAGS.checkpoint_dir = FLAGS.result_dir + 'checkpoint/' + FLAGS.dataset + '_' + FLAGS.dir_tag
 

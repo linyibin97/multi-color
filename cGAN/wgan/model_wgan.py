@@ -151,7 +151,7 @@ class WGAN(object):
 
         while data.epoch_idx<config.epoch:
             # Update D network for k_d times
-            for k_d in xrange(0, config.K_for_Dtrain):
+            for k_d in range(0, config.K_for_Dtrain):
                 batch_images = data.load_data(config)
                 batch_z = np.random.uniform(-1, 1, [config.batch_size, config.z_dim]).astype(np.float32)
                 _, _g_loss, _d_loss, _loss = self.sess.run([d_optim, self.g_loss, self.d_loss, self.total_loss], 
@@ -166,7 +166,7 @@ class WGAN(object):
                         print(var.eval())
                         '''
             # Update G network
-            for k_g in xrange(0, config.K_for_Gtrain):
+            for k_g in range(0, config.K_for_Gtrain):
                 batch_images = data.load_data(config)
                 batch_z = np.random.uniform(-1, 1, [config.batch_size, config.z_dim]).astype(np.float32)
                 self.sess.run([g_optim], feed_dict={self.z: batch_z, self.images: batch_images})
