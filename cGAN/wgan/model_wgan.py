@@ -24,7 +24,7 @@ class DataProvider(object):
                 self.data = glob(os.path.join("../data", config.dataset, "val", "*.jpg"))
 
         self.len = len(self.data)
-        print 'data len:', self.len
+        print('data len:', self.len)
         self.batch_idxs = self.len // config.batch_size
         self.batch_idx = 0
         self.epoch_idx = 0
@@ -40,7 +40,7 @@ class DataProvider(object):
         elif config.color_space=="RGB":
             batch_images = np.array([(misc.imread(batch_file)/127.5 - 1.) for batch_file in batch_files], dtype=np.float32)
         else:
-            print "[!] Wrong color space!"
+            print("[!] Wrong color space!")
         self.batch_idx+=1
         if self.batch_idx>=self.batch_idxs:
             np.random.shuffle(self.data)
@@ -115,7 +115,7 @@ class WGAN(object):
             d_optim = tf.train.RMSPropOptimizer(config.d_learning_rate, decay=0.9).minimize(self.d_loss, var_list=self.d_vars)
             g_optim = tf.train.RMSPropOptimizer(config.g_learning_rate, decay=0.9).minimize(self.g_loss, var_list=self.g_vars)
         else:
-            print "[!] Wrong optimizer!"
+            print("[!] Wrong optimizer!")
             return
 
         if not config.improved_wgan:
@@ -160,10 +160,10 @@ class WGAN(object):
                 if not config.improved_wgan:
                     self.sess.run([clip_d_vars_op], feed_dict={})
                     '''
-                    print "d_vars after clip:"
+                    print("d_vars after clip:")
                     for var in self.d_vars:
-                        print var.name
-                        print var.eval()
+                        print(var.name)
+                        print(var.eval())
                         '''
             # Update G network
             for k_g in xrange(0, config.K_for_Gtrain):
@@ -215,7 +215,7 @@ class WGAN(object):
             h0 = tf.nn.relu(batch_norm(h0, name = 'g_bn0'))
             # concat with Y
             h1 = tf.concat([image_Y, h0], 3)
-            #print 'h0 shape after concat:', h0.get_shape()
+            #print('h0 shape after concat:', h0.get_shape())
             h1 = conv2d(h1, 128, k_h = 7, k_w = 7, d_h = 1, d_w = 1, name = 'g_h1_conv')
             h1 = tf.nn.relu(batch_norm(h1, name = 'g_bn1'))
 
@@ -239,7 +239,7 @@ class WGAN(object):
             h6 = conv2d(h6, 2, k_h = 5, k_w = 5,  d_h = 1, d_w = 1, name = 'g_h6_conv')
             out = tf.nn.tanh(h6)
 
-            print 'generator out shape:', out.get_shape()
+            print('generator out shape:', out.get_shape())
 
             return out
 
@@ -252,22 +252,22 @@ class WGAN(object):
             os.makedirs(checkpoint_dir)
 
         this_checkpoint_dir = self.saver.save(self.sess, os.path.join(checkpoint_dir, model_name), global_step=step)
-        print 'Saved checkpoint_dir:', this_checkpoint_dir
+        print('Saved checkpoint_dir:', this_checkpoint_dir)
 
     def load(self, config=None):
         print(" [*] Reading checkpoints...")
 
         model_dir = "%s_%s_%s" % (config.dataset, config.batch_size, config.image_size)
         checkpoint_dir = os.path.join(config.checkpoint_dir, model_dir)
-        print 'checkpoint_dir:', checkpoint_dir
+        print('checkpoint_dir:', checkpoint_dir)
 
         ckpt = tf.train.get_checkpoint_state(checkpoint_dir)  #get_checkpoint_state() returns CheckpointState Proto
         if ckpt and ckpt.model_checkpoint_path:
             latest_checkpoint = tf.train.latest_checkpoint(checkpoint_dir)
-            print 'latest checkpoint:', latest_checkpoint
+            print('latest checkpoint:', latest_checkpoint)
             ckpt_name = os.path.basename(ckpt.model_checkpoint_path)
             #ckpt_name = 'WGAN.model-77922'
-            print 'loading checkpoint:', os.path.join(checkpoint_dir, ckpt_name)
+            print('loading checkpoint:', os.path.join(checkpoint_dir, ckpt_name))
             self.saver.restore(self.sess, os.path.join(checkpoint_dir, ckpt_name))
             return True
         else:
@@ -279,7 +279,7 @@ class WGAN(object):
         test_image_idx = config.test_image_idx
         if test_image_idx<0:
             test_image_idx = np.random.randint(0, data.len)
-        print 'Test image idx:', test_image_idx
+        print('Test image idx:', test_image_idx)
         save_dir = '{}/{:06d}'.format(config.sample_dir, test_image_idx)
         if not os.path.exists(save_dir):
             os.mkdir(save_dir)
@@ -308,19 +308,19 @@ class WGAN(object):
         save_result_g_loss = []
         save_result_d_loss = []
 
-        print "Testing fixed %d images..."%config.batch_size
+        print("Testing fixed %d images..."%config.batch_size)
         for test_round_idx in range(config.batch_size):
-            print 'Round',test_round_idx, 
+            print('Round',test_round_idx, )
             _generate_image, _g_loss, _d_loss = self.sess.run([self.generate_image, self.g_loss, self.d_loss], feed_dict={self.z: test_z_batches[test_round_idx], self.images: test_image_batch})
-            print "g_loss: %.8f, d_loss: %.8f" % (_g_loss, _d_loss)
+            print("g_loss: %.8f, d_loss: %.8f" % (_g_loss, _d_loss))
             save_images(_generate_image[:save_size * save_size], [save_size, save_size], '{}/test_fixed_round_{:01d}{:02d}.png'.format(config.sample_dir, config.test_offset, test_round_idx), color_space=config.color_space)
             #scipy.misc.imsave('{}/test_fixed_round_{:01d}{:02d}.png'.format(config.sample_dir, config.test_offset, test_round_idx), merge(generate_image[:save_size * save_size], [save_size, save_size]))
 
             save_result_g_loss.append(_g_loss)
             save_result_d_loss.append(_d_loss)
         
-        print 'Test done.'
+        print('Test done.')
 
         with open('{}/test_fixed_prob_{:01d}.pkl'.format(config.sample_dir, config.test_offset), 'w') as outfile:
             cPickle.dump((test_image_idxs, test_images, test_z_batches, save_result_g_loss, save_result_d_loss), outfile)
-        print 'Save done.'
+        print('Save done.')

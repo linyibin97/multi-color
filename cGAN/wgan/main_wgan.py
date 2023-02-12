@@ -80,15 +80,15 @@ def main(_):
                 dcgan.train(FLAGS)
             else:
                 if dcgan.load(FLAGS):
-                    print " [*] Load SUCCESS"
+                    print(" [*] Load SUCCESS")
                     if FLAGS.test_random_z:
-                        print " [*] Test RANDOM Z"
+                        print(" [*] Test RANDOM Z")
                         dcgan.test_fix(FLAGS)
                     else:
-                        print " [*] Test Z"
+                        print(" [*] Test Z")
                         dcgan.test_z(FLAGS)
                 else:
-                    print " [!] Load failed..."
+                    print(" [!] Load failed...")
 
 if __name__ == '__main__':
     tf.app.run()
