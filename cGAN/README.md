@@ -18,13 +18,13 @@ run train_lsun_wgan.sh for shortcut
 or adjust settings by:
 ```
 python main_wgan.py --is_train=True --some_paramter=some_value
-```  
+```
 ### Test  
 run test_lsun_wgan.sh for shortcut  
 or adjust settings by:
 ```
-python main_wgan.py --is_train=False --some_paramter=some_value
-```  
+python main_wgan.py --is_train=False --dataset anime_face --batch_size 1
+```
 ### Demo  
 Some demo results in demo/gan/
 

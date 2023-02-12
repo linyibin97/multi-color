@@ -55,6 +55,9 @@ class DataProvider(object):
         if config.color_space=="YUV":
             one_data = cvtRGB2YUV(one_data)
         return np.array(one_data, dtype = np.float32)/127.5 - 1.
+    
+    def get_data_name(self, idx):
+        return os.path.splitext(os.path.split(self.data[idx])[1])[0]
 
 class WGAN(object):
     def __init__(self, sess, config=None):
@@ -245,8 +248,9 @@ class WGAN(object):
 
     def save(self, config=None, step=0):
         model_name = "WGAN.model"
-        model_dir = "%s_%s_%s" % (config.dataset, config.batch_size, config.image_size)
-        checkpoint_dir = os.path.join(config.checkpoint_dir, model_dir)
+        # model_dir = "%s_%s_%s" % (config.dataset, config.batch_size, config.image_size)
+        # checkpoint_dir = os.path.join(config.checkpoint_dir, model_dir)
+        checkpoint_dir = config.checkpoint_dir
 
         if not os.path.exists(checkpoint_dir):
             os.makedirs(checkpoint_dir)
@@ -257,8 +261,9 @@ class WGAN(object):
     def load(self, config=None):
         print(" [*] Reading checkpoints...")
 
-        model_dir = "%s_%s_%s" % (config.dataset, config.batch_size, config.image_size)
-        checkpoint_dir = os.path.join(config.checkpoint_dir, model_dir)
+        # model_dir = "%s_%s_%s" % (config.dataset, config.batch_size, config.image_size)
+        # checkpoint_dir = os.path.join(config.checkpoint_dir, model_dir)
+        checkpoint_dir = config.checkpoint_dir
         print('checkpoint_dir:', checkpoint_dir)
 
         ckpt = tf.train.get_checkpoint_state(checkpoint_dir)  #get_checkpoint_state() returns CheckpointState Proto
@@ -289,10 +294,34 @@ class WGAN(object):
 
     def test_fix(self, config=None):
         data = DataProvider(config)
+
+        for s in range(config.sample_times):
+            output_dir = os.path.join(config.result_dir, "output", config.dataset, s)
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+        
+        for test_idx in range(data.len):
+            test_z_batches = np.random.uniform(-1, 1, size=(config.sample_times, config.batch_size ,config.z_dim))
+            test_image = data.load_one_data(config, test_idx)
+            test_image_name = data.get_data_name(test_idx)
+
+            for i in range(config.sample_times):
+                _generate_image, _g_loss, _d_loss = self.sess.run([self.generate_image, self.g_loss, self.d_loss], feed_dict={self.z: test_z_batches[i], self.images: [test_image]})
+
+                for j in config.batch_size:
+                    save_path = os.path.join(config.result_dir, "output", config.dataset, i, test_image_name)
+                    save_image(_generate_image[j], save_path, color_space=config.color_space)
+                    print(save_path)
+
+
+
+        # -------------------------------------------------------------------------------
+
+'''
         save_size = int(math.sqrt(config.batch_size))
 
         #get fixed image
-        test_image_idxs = np.arange(config.batch_size)*1000+config.test_offset
+        test_image_idxs = np.arange(config.batch_size)*100+config.test_offset
         test_images = []
         for test_image_idx in test_image_idxs:
             test_image = data.load_one_data(config, test_image_idx)
@@ -302,8 +331,10 @@ class WGAN(object):
         #scipy.misc.imsave('{}/test_fixed_origin_{:01d}.png'.format(config.sample_dir, config.test_offset), merge(test_image_batch[:save_size * save_size], [save_size, save_size]))
 
         #get fixed z
-        with open("test_z_fixed.pkl",'r') as infile:
-            test_z_batches = pk.load(infile)
+        print()
+        test_z_batches = np.random.uniform(-1, 1, size=(config.batch_size, config.batch_size, config.z_dim))
+        # with open("test_z_fixed.pkl",'r') as infile:
+        #     test_z_batches = pk.load(infile)
         
         save_result_g_loss = []
         save_result_d_loss = []
@@ -313,6 +344,7 @@ class WGAN(object):
             print('Round',test_round_idx, )
             _generate_image, _g_loss, _d_loss = self.sess.run([self.generate_image, self.g_loss, self.d_loss], feed_dict={self.z: test_z_batches[test_round_idx], self.images: test_image_batch})
             print("g_loss: %.8f, d_loss: %.8f" % (_g_loss, _d_loss))
+            # generate_image: [batchsize, 64, 64, 3]
             save_images(_generate_image[:save_size * save_size], [save_size, save_size], '{}/test_fixed_round_{:01d}{:02d}.png'.format(config.sample_dir, config.test_offset, test_round_idx), color_space=config.color_space)
             #scipy.misc.imsave('{}/test_fixed_round_{:01d}{:02d}.png'.format(config.sample_dir, config.test_offset, test_round_idx), merge(generate_image[:save_size * save_size], [save_size, save_size]))
 
@@ -320,7 +352,7 @@ class WGAN(object):
             save_result_d_loss.append(_d_loss)
         
         print('Test done.')
-
-        with open('{}/test_fixed_prob_{:01d}.pkl'.format(config.sample_dir, config.test_offset), 'w') as outfile:
-            pk.dump((test_image_idxs, test_images, test_z_batches, save_result_g_loss, save_result_d_loss), outfile)
-        print('Save done.')
+'''
+        # with open('{}/test_fixed_prob_{:01d}.pkl'.format(config.sample_dir, config.test_offset), 'w') as outfile:
+        #     pk.dump((test_image_idxs, test_images, test_z_batches, save_result_g_loss, save_result_d_loss), outfile)
+        # print('Save done.')
