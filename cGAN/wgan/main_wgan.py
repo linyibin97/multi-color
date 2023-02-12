@@ -61,7 +61,7 @@ FLAGS = tf.flags.FLAGS
 
 def main(_):
 
-    print(FLAGS)
+    # print(FLAGS)
     FLAGS.sample_dir = FLAGS.result_dir + 'samples/' + FLAGS.dataset + '_' + FLAGS.dir_tag
     FLAGS.checkpoint_dir = FLAGS.result_dir + 'checkpoint/' + FLAGS.dataset + '_' + FLAGS.dir_tag
 

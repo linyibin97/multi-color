@@ -29,6 +29,6 @@ python data_preprocessor.py --input_dir D:/anime_face_mini/origin_val --output_d
 
 ```
 cd wgan
-python main_wgan.py --is_train=True --dataset anime_face --batch_size 4
+python main_wgan.py --is_train=True --dataset anime_face --batch_size 36 --epoch 100
 ```
 
