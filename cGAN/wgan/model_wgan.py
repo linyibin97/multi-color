@@ -308,7 +308,7 @@ class WGAN(object):
             for i in range(config.sample_times):
                 _generate_image, _g_loss, _d_loss = self.sess.run([self.generate_image, self.g_loss, self.d_loss], feed_dict={self.z: test_z_batches[i], self.images: [test_image]})
 
-                for j in config.batch_size:
+                for j in  range(config.batch_size):
                     save_path = os.path.join(config.result_dir, "output", config.dataset, str(i), test_image_name)
                     save_image(_generate_image[j], save_path, color_space=config.color_space)
                     print(save_path)
