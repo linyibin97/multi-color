@@ -13,6 +13,7 @@
 
  pip install scipy==1.2.1
  pip install Pillow
+ pip install matplotlib
 ```
 
 #### 数据预处理

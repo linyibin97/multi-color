@@ -171,7 +171,7 @@ class WGAN(object):
                 batch_z = np.random.uniform(-1, 1, [config.batch_size, config.z_dim]).astype(np.float32)
                 self.sess.run([g_optim], feed_dict={self.z: batch_z, self.images: batch_images})
 
-            print("Epoch: [%2d] [%5d/%5d] time: %4.4f, total loss: %.8f, g_loss: %.8f,\n\t d_loss: %.8f" % (
+            print("Epoch: [%2d] [%5d/%5d] time: %4.4f, total loss: %.8f, g_loss: %.8f, d_loss: %.8f" % (
                     data.epoch_idx, data.batch_idx, data.batch_idxs, time.time() - start_time, _loss, _g_loss, _d_loss))
             log_txt.write("{:d} {:d} {:d} {:.8f} {:.8f} {:.8f}\n".format(data.epoch_idx, data.batch_idx, data.batch_idxs, _loss, _g_loss, _d_loss))
 
