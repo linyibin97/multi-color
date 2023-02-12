@@ -4,9 +4,9 @@ import pprint
 
 from model_wgan import WGAN
 
-import tensorflow as tf
-# import tensorflow.compat.v1 as tf
-# tf.disable_v2_behavior()
+# import tensorflow as tf
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
 
 tf.app.flags.DEFINE_string("devices", "gpu:0", "Which gpu to be used")
 

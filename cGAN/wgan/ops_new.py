@@ -1,12 +1,21 @@
-import tensorflow as tf
-# import tensorflow.compat.v1 as tf
-# tf.disable_v2_behavior()
+# import tensorflow as tf
+import tensorflow.compat.v1 as tf
+import tf_slim
+tf.disable_v2_behavior()
 
 from tensorflow.python.framework import ops
 
 def batch_norm(input_, train=True, epsilon=1e-5, momentum = 0.9, name="batch_norm"):
     with tf.variable_scope(name):
-        return tf.contrib.layers.batch_norm(inputs=input_,
+        # return tf.contrib.layers.batch_norm(inputs=input_,
+        #                   decay=momentum, 
+        #                   center=True,
+        #                   updates_collections=None,
+        #                   epsilon=epsilon,
+        #                   scale=True,
+        #                   is_training=train,
+        #                   scope=name)
+        return tf_slim.batch_norm(inputs=input_,
                           decay=momentum, 
                           center=True,
                           updates_collections=None,
