@@ -57,7 +57,7 @@ class DataProvider(object):
         return np.array(one_data, dtype = np.float32)/127.5 - 1.
     
     def get_data_name(self, idx):
-        return os.path.splitext(os.path.split(self.data[idx])[1])[0]
+        return os.path.split(self.data[idx])[1]
 
 class WGAN(object):
     def __init__(self, sess, config=None):
