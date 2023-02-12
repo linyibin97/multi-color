@@ -310,8 +310,8 @@ class WGAN(object):
 
                 for j in  range(config.batch_size):
                     save_path = os.path.join(config.result_dir, "output", config.dataset, str(i), test_image_name)
-                    save_image(_generate_image[j], save_path, color_space=config.color_space)
                     print(save_path)
+                    save_image(_generate_image[j], save_path, color_space=config.color_space)
 
 
 
