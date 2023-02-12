@@ -2,7 +2,7 @@ import os
 import sys
 import time
 import math
-import cPickle
+import pickle as pk
 from scipy import misc
 from glob import glob
 #from matplotlib import pyplot as plt
@@ -303,7 +303,7 @@ class WGAN(object):
 
         #get fixed z
         with open("test_z_fixed.pkl",'r') as infile:
-            test_z_batches = cPickle.load(infile)
+            test_z_batches = pk.load(infile)
         
         save_result_g_loss = []
         save_result_d_loss = []
@@ -322,5 +322,5 @@ class WGAN(object):
         print('Test done.')
 
         with open('{}/test_fixed_prob_{:01d}.pkl'.format(config.sample_dir, config.test_offset), 'w') as outfile:
-            cPickle.dump((test_image_idxs, test_images, test_z_batches, save_result_g_loss, save_result_d_loss), outfile)
+            pk.dump((test_image_idxs, test_images, test_z_batches, save_result_g_loss, save_result_d_loss), outfile)
         print('Save done.')
