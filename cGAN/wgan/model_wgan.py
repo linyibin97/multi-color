@@ -18,7 +18,11 @@ class DataProvider(object):
             with open('../lsun_64/bedroom_train_valid.lst', 'r') as lstfile:
                 self.data = ['../lsun_64/bedroom_train/'+imgname for imgname in lstfile.read().split()]
         else:
-            self.data = glob(os.path.join("./data/", config.dataset, "*.jpg"))
+            if config.is_train:
+                self.data = glob(os.path.join("../data", config.dataset, "train", "*.jpg"))
+            else:
+                self.data = glob(os.path.join("../data", config.dataset, "val", "*.jpg"))
+
         self.len = len(self.data)
         print 'data len:', self.len
         self.batch_idxs = self.len // config.batch_size

@@ -4,7 +4,8 @@ import pprint
 
 from model_wgan import WGAN
 
-import tensorflow as tf
+# import tensorflow as tf
+import tensorflow.compact.v1 as tf
 
 tf.app.flags.DEFINE_string("devices", "gpu:0", "Which gpu to be used")
 
