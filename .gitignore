@@ -1,0 +1,10 @@
+*.zip
+*.tgz
+*.png
+*.jpg
+*.pdf
+checkpoint/
+result/
+__pycache__/
+/VAE-MDN/data/
+/cGAN/data/
