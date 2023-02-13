@@ -76,5 +76,5 @@ val_data  =  LabColorDataset(val_list,  transf)
 test_all = torch.stack(list(test_data), 0).cuda()
 val_all = torch.stack(list(test_data), 0).cuda()
 
-train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=0,  pin_memory=True, drop_last=True)
+train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=4,  pin_memory=True, drop_last=True)
 test_loader = DataLoader(test_data,   batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True, drop_last=False)

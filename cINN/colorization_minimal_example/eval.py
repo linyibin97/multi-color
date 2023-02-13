@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tqdm import tqdm
 from scipy.spatial import distance_matrix
+import os
 
 import model
 import data
@@ -81,6 +82,9 @@ def rgb_var(n):
         print(np.mean(var))
         print(F'sqrt(Var) (of {n} samples)')
         print(np.sqrt(np.mean(var)))
+
+if not os.path.exists('./images'):
+    os.mkdir('./images')
 
 for i in range(8):
     torch.manual_seed(i+111)
