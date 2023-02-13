@@ -11,9 +11,9 @@ import data
 
 cinn = model.ColorizationCINN(1e-3)
 cinn.cuda()
-scheduler = torch.optim.lr_scheduler.StepLR(cinn.optimizer, 1, gamma=0.1)
+scheduler = torch.optim.lr_scheduler.StepLR(cinn.optimizer, 5, gamma=0.1)
 
-N_epochs = 100
+N_epochs = 20
 t_start = time()
 nll_mean = []
 save_per_epochs = 5

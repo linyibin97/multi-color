@@ -28,7 +28,7 @@ def colorize_test_set(temp=1., postfix=0, img_folder='images'):
             z = temp * torch.randn(Lab.shape[0], model.ndim_total).cuda()
             L, ab = Lab[:, :1], Lab[:, 1:]
 
-            ab_gen = cinn.reverse_sample(z, L)
+            ab_gen, _ = cinn.reverse_sample(z, L)
             rgb_gen = data.norm_lab_to_rgb(L.cpu(), ab_gen.cpu())
 
             for im in rgb_gen:
@@ -53,7 +53,7 @@ def best_of_n(n):
 
             for k in range(n):
                 z = torch.randn(B, model.ndim_total).cuda()
-                ab_k = cinn.reverse_sample(z, L)
+                ab_k, _ = cinn.reverse_sample(z, L)
                 rgb_k = data.norm_lab_to_rgb(L.cpu(), ab_k.cpu()).reshape(B, -1)
 
                 errs_k = np.mean((rgb_k - rgb_gt)**2, axis=1)
@@ -73,7 +73,7 @@ def rgb_var(n):
             L = Lab[:1].view(1,1,64,64).expand(n, -1, -1, -1).cuda()
             z = torch.randn(n, model.ndim_total).cuda()
 
-            ab = cinn.reverse_sample(z, L)
+            ab, _ = cinn.reverse_sample(z, L)
             rgb = data.norm_lab_to_rgb(L.cpu(), ab.cpu()).reshape(n, -1)
 
             var.append(np.mean(np.var(rgb, axis=0)))
