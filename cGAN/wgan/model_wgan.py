@@ -147,7 +147,7 @@ class WGAN(object):
                 return
 
         counter = 1
-        sample_interval = 200//(config.K_for_Dtrain+config.K_for_Gtrain)
+        sample_interval = 500//(config.K_for_Dtrain+config.K_for_Gtrain)
         save_interval = 2000//(config.K_for_Dtrain+config.K_for_Gtrain)
         log_txt = open(config.result_dir+'checkpoint/'+config.dataset+'_'+config.dir_tag+'_log.txt', 'w')
         start_time = time.time()
@@ -300,8 +300,23 @@ class WGAN(object):
             if not os.path.exists(output_dir):
                 os.makedirs(output_dir)
         
-        for test_idx in range(data.len):
-            test_z_batches = np.random.uniform(-1, 1, size=(config.sample_times, config.batch_size ,config.z_dim))
+        for batch_idx in range(math.ceil(data.len/config.batch_size)):
+
+            start_idx = batch_idx*config.batch_size
+            end_idx = min((batch_idx+1)*config.batch_size, data.len)
+            batch_size = end_idx - start_idx
+            test_z_batches = np.random.uniform(-1, 1, size=(config.sample_times, batch_size ,config.z_dim))
+
+            test_images = np.array([data.load_one_data(config, test_idx) for test_idx in range(start_idx, end_idx)], dtype=np.float32)
+            test_images_name = [data.get_data_name(test_idx) for test_idx in range(start_idx, end_idx, data.len)]
+
+            for sample_idx in range(config.sample_times):
+                _generate_image, _g_loss, _d_loss = self.sess.run([self.generate_image, self.g_loss, self.d_loss], feed_dict={self.z: test_z_batches[sample_idx], self.images: test_images})
+                for i in range(batch_size):
+                    save_path = os.path.join(config.result_dir, "output", config.dataset, str(i), test_images_name[i])
+                    print(save_path)
+                    save_image(_generate_image[i], save_path, color_space=config.color_space)
+'''
             test_image = data.load_one_data(config, test_idx)
             test_image_name = data.get_data_name(test_idx)
 
@@ -312,8 +327,7 @@ class WGAN(object):
                     save_path = os.path.join(config.result_dir, "output", config.dataset, str(i), test_image_name)
                     print(save_path)
                     save_image(_generate_image[j], save_path, color_space=config.color_space)
-
-
+'''
 
         # -------------------------------------------------------------------------------
 
