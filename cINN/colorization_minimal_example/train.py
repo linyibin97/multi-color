@@ -12,9 +12,10 @@ cinn = model.ColorizationCINN(1e-3)
 cinn.cuda()
 scheduler = torch.optim.lr_scheduler.StepLR(cinn.optimizer, 1, gamma=0.1)
 
-N_epochs = 3
+N_epochs = 100
 t_start = time()
 nll_mean = []
+save_per_epochs = 5
 
 print('Epoch\tBatch/Total \tTime \tNLL train\tNLL val\tLR')
 for epoch in range(N_epochs):
@@ -43,4 +44,8 @@ for epoch in range(N_epochs):
             nll_mean = []
 
     scheduler.step()
+
+    if (epoch % save_per_epochs == 0):
+        torch.save(cinn.state_dict(), f'output/lsun_cinn_epoch{epoch}.pt')
+
 torch.save(cinn.state_dict(), f'output/lsun_cinn.pt')
