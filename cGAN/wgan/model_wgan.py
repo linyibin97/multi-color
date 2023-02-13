@@ -305,15 +305,22 @@ class WGAN(object):
             start_idx = batch_idx*config.batch_size
             end_idx = min((batch_idx+1)*config.batch_size, data.len)
             batch_size = end_idx - start_idx
-            test_z_batches = np.random.uniform(-1, 1, size=(config.sample_times, batch_size ,config.z_dim))
+            test_z_batches = np.random.uniform(-1, 1, size=(config.sample_times, config.batch_size ,config.z_dim))
 
-            test_images = np.array([data.load_one_data(config, test_idx) for test_idx in range(start_idx, end_idx)], dtype=np.float32)
-            test_images_name = [data.get_data_name(test_idx) for test_idx in range(start_idx, end_idx, data.len)]
+            test_images = []
+            test_images_name = []
+            for test_idx in range(start_idx, end_idx):
+                test_images.append(data.load_one_data(config, test_idx))
+                test_images_name.append(data.get_data_name(test_idx))
+            if (batch_size < config.batch_size):
+                for i in range(config.batch_size - batch_size):
+                    test_images.append(np.zeros((config.image_size, config.image_size, 3), dtype=np.float32))
+            test_images = np.array(test_images, dtype=np.float32)
 
             for sample_idx in range(config.sample_times):
                 _generate_image, _g_loss, _d_loss = self.sess.run([self.generate_image, self.g_loss, self.d_loss], feed_dict={self.z: test_z_batches[sample_idx], self.images: test_images})
                 for i in range(batch_size):
-                    save_path = os.path.join(config.result_dir, "output", config.dataset, str(i), test_images_name[i])
+                    save_path = os.path.join(config.result_dir, "output", config.dataset, str(sample_idx), test_images_name[i])
                     print(save_path)
                     save_image(_generate_image[i], save_path, color_space=config.color_space)
 '''
