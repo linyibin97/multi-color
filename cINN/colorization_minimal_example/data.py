@@ -5,7 +5,7 @@ from PIL import Image
 from torch.utils.data import Dataset, DataLoader, TensorDataset
 import torchvision.transforms as T
 
-batch_size = 64#128
+batch_size = 4#128
 offsets = (47.5, 2.4, 7.4)
 scales  = (25.6, 11.2, 16.8)
 
@@ -58,13 +58,13 @@ class LabColorDataset(Dataset):
 
 transf = T.Resize(64)
 
-# test_list = [f'./anime_face_mini/origin_val/{"%07d"%i}.jpg' for i in range(130000, 130010)]
-# val_list = [f'./anime_face_mini/origin_val/{"%07d"%i}.jpg' for i in range(130000, 130010)]
-# train_list = [f'./anime_face_mini/origin_train/{"%07d"%i}.jpg' for i in range(0, 10)]
+test_list = [f'./anime_face_mini/origin_val/{"%07d"%i}.jpg' for i in range(130000, 130010)]
+val_list = [f'./anime_face_mini/origin_val/{"%07d"%i}.jpg' for i in range(130000, 130010)]
+train_list = [f'./anime_face_mini/origin_train/{"%07d"%i}.jpg' for i in range(0, 10)]
 
-test_list = [f'./anime_face/origin_val/{"%07d"%i}.jpg' for i in range(130000, 140000)]
-val_list = [f'./anime_face/origin_val/{"%07d"%i}.jpg' for i in range(130000, 130010)]
-train_list = [f'./anime_face/origin_train/{"%07d"%i}.jpg' for i in range(0, 130000)]
+# test_list = [f'./anime_face/origin_val/{"%07d"%i}.jpg' for i in range(130000, 140000)]
+# val_list = [f'./anime_face/origin_val/{"%07d"%i}.jpg' for i in range(130000, 130010)]
+# train_list = [f'./anime_face/origin_train/{"%07d"%i}.jpg' for i in range(0, 130000)]
 
 # test_list =  [f'./train_data_128/{i}.jpg' for i in range(1, 1025)]
 # val_list =   [f'./train_data_128/{i}.jpg' for i in range(1025, 2049)]
@@ -75,6 +75,6 @@ test_data  = LabColorDataset(test_list,  transf)
 val_data  =  LabColorDataset(val_list,  transf)
 test_all = torch.stack(list(test_data), 0).cuda()
 val_all = torch.stack(list(test_data), 0).cuda()
-
+# num_workers=0 when windows system
 train_loader = DataLoader(train_data, batch_size=batch_size, shuffle=True, num_workers=4,  pin_memory=True, drop_last=True)
 test_loader = DataLoader(test_data,   batch_size=batch_size, shuffle=False, num_workers=4, pin_memory=True, drop_last=False)

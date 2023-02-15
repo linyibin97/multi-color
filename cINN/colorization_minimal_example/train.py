@@ -21,6 +21,9 @@ save_per_epochs = 5
 if not os.path.exists('./output'):
     os.mkdir('./output')
 
+log_txt = open('./log.txt', 'w')
+log_txt.write('Epoch\tBatch/Total \tTime \tNLL train\tNLL val\tLR\n')
+
 print('Epoch\tBatch/Total \tTime \tNLL train\tNLL val\tLR')
 for epoch in range(N_epochs):
     for i, Lab in enumerate(data.train_loader):
@@ -38,13 +41,19 @@ for epoch in range(N_epochs):
                 z, log_j = cinn(data.val_all[:512])
                 nll_val = torch.mean(z**2) / 2 - torch.mean(log_j) / model.ndim_total
 
-            print('%.3i \t%.5i/%.5i \t%.2f \t%.6f\t%.6f\t%.2e' % (epoch,
+            log_msg = '%.3i \t%.5i/%.5i \t%.2f \t%.6f\t%.6f\t%.2e' % (epoch,
                                                             i, len(data.train_loader),
                                                             (time() - t_start)/60.,
                                                             np.mean(nll_mean),
                                                             nll_val.item(),
                                                             cinn.optimizer.param_groups[0]['lr'],
-                                                            ), flush=True)
+                                                            )
+
+            print(log_msg, flush=True)
+
+            log_txt.write(log_msg+'\n')
+            log_txt.flush()
+
             nll_mean = []
 
     scheduler.step()

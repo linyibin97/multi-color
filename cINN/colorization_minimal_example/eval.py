@@ -13,15 +13,15 @@ import data
 cinn = model.ColorizationCINN(0)
 cinn.cuda()
 cinn.eval()
-state_dict = {k:v for k,v in torch.load('output/lsun_cinn.pt').items() if 'tmp_var' not in k}
-cinn.load_state_dict(state_dict)
+state_dict = torch.load('./output/lsun_cinn.pt')
+cinn.load_state_dict(state_dict, strict=False)
 
 def colorize_test_set(temp=1., postfix=0, img_folder='images'):
     '''Colorize the whole test set once.
     temp:       Sampling temperature
     postfix:    Has to be integer. Append to file name (e.g. to make 10 diverse colorizations of test set)
     '''
-    counter = 0
+    counter = 130000
     with torch.no_grad():
         for Lab in tqdm(data.test_loader):
             Lab = Lab.cuda()
@@ -33,7 +33,7 @@ def colorize_test_set(temp=1., postfix=0, img_folder='images'):
 
             for im in rgb_gen:
                 im = np.transpose(im, (1,2,0))
-                plt.imsave(join(img_folder, '%.6i_%.3i.png' % (counter, postfix)), im)
+                plt.imsave(join(img_folder, '%07d.png' % (counter, postfix)), im)
                 counter += 1
 
 
@@ -86,6 +86,6 @@ def rgb_var(n):
 if not os.path.exists('./images'):
     os.mkdir('./images')
 
-for i in range(8):
+for i in range(6):
     torch.manual_seed(i+111)
     colorize_test_set(postfix=i)
