@@ -37,6 +37,8 @@ class lab_imageloader:
     self.out_directory = out_directory
     self.lossweights = None
 
+    if not os.path.exists(out_directory): os.makedirs(out_directory)
+
     countbins = 1./np.load('data/zhang_weights/prior_probs.npy')
     binedges = np.load('data/zhang_weights/ab_quantize.npy').reshape(2, 313)
     lossweights = {}  

@@ -45,6 +45,20 @@ def main():
     FLAGS.list_dir = 'data/imglist/lfw/'
     FLAGS.pc_dir = 'data/pcomp/lfw/'
   #add other datasets here
+  elif(sys.argv[1] == 'anime_face'):
+    FLAGS.batch_size = 32
+    FLAGS.updates_per_epoch = 130000 // FLAGS.batch_size
+    FLAGS.log_interval = 200
+    FLAGS.out_dir = 'data/output/anime_face/'
+    FLAGS.list_dir = 'data/imglist/anime_face/'
+    # FLAGS.pc_dir = 'data/pcomp/anime_face/'
+  elif(sys.argv[1] == 'anime_face_mini'):
+    FLAGS.batch_size = 2
+    FLAGS.updates_per_epoch = 11 // FLAGS.batch_size
+    FLAGS.log_interval = 1
+    FLAGS.out_dir = 'data/output/anime_face_mini/'
+    FLAGS.list_dir = 'data/imglist/anime_face_mini/'
+    # FLAGS.pc_dir = 'data/pcomp/anime_face/'
   else:
     raise NameError('[ERROR] Incorrect dataset key')
 
