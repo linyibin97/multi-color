@@ -3,7 +3,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0"
 import socket
 import sys
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import numpy as np
 from data_loaders.lab_imageloader import lab_imageloader
 from arch.vae_skipconn import vae_skipconn as vae

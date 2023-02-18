@@ -1,4 +1,4 @@
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from layer_factory import layer_factory
 from tensorflow.python.framework import tensor_shape
 
@@ -102,8 +102,8 @@ class vae_skipconn:
 	
 	#Takes loss and returns GD train step
 	def optimize(self, loss, epsilon):
-	    train_step = tf.train.AdamOptimizer(self.flags.lr_vae, epsilon=epsilon).minimize(loss) 
-	    return train_step
+		train_step = tf.train.AdamOptimizer(self.flags.lr_vae, epsilon=epsilon).minimize(loss) 
+		return train_step
 	
 	def __cond_encoder(self, scope, input_tensor, bn_is_training, keep_prob, in_nch=1, reuse=False):
 	

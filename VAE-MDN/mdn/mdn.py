@@ -4,7 +4,7 @@ os.environ["CUDA_VISIBLE_DEVICES"]="0"
 import socket
 import sys
 
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 import numpy as np
 from data_loaders.zhangfeats_loader import zhangfeats_loader 
 from arch.layer_factory import layer_factory

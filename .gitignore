@@ -7,5 +7,6 @@ checkpoint/
 result/
 __pycache__/
 /VAE-MDN/data/
+/VAE-MDN/third_party/colorization/
 /cGAN/data/
 /cINN/**/output

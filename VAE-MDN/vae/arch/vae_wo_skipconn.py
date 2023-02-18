@@ -1,6 +1,6 @@
 import os
 import numpy as np
-import tensorflow as tf
+import tensorflow.compat.v1 as tf
 from layer_factory import layer_factory
 from tensorflow.python.framework import tensor_shape
 
