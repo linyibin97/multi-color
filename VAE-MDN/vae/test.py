@@ -45,6 +45,20 @@ def main():
     FLAGS.out_dir = 'data/output/lfw/'
     FLAGS.list_dir = 'data/imglist/lfw/'
     FLAGS.pc_dir = 'data/pcomp/lfw/'
+  elif(sys.argv[1] == 'anime_face'):
+    FLAGS.batch_size = 32
+    FLAGS.updates_per_epoch = 130000 // FLAGS.batch_size
+    FLAGS.log_interval = 200
+    FLAGS.out_dir = 'data/output/anime_face/'
+    FLAGS.list_dir = 'data/imglist/anime_face/'
+    # FLAGS.pc_dir = 'data/pcomp/anime_face/'
+  elif(sys.argv[1] == 'anime_face_mini'):
+    FLAGS.batch_size = 2
+    FLAGS.updates_per_epoch = 11 // FLAGS.batch_size
+    FLAGS.log_interval = 1
+    FLAGS.out_dir = 'data/output/anime_face_mini/'
+    FLAGS.list_dir = 'data/imglist/anime_face_mini/'
+    # FLAGS.pc_dir = 'data/pcomp/anime_face/'
   else:
     raise NameError('[ERROR] Incorrect dataset key')
   data_loader = lab_imageloader(FLAGS.in_dir, \
@@ -61,7 +75,7 @@ def main():
     model_colorfield = vae(FLAGS, nch=2, condinference_flag=True)
     dnn = network(model_colorfield, data_loader, 2, FLAGS)
     dnn.run_divcolor(os.path.join(FLAGS.out_dir, 'models') , \
-      latent_vars_colorfield_test, num_batches=num_batches)
+      lv_mdn_test, num_batches=num_batches)
     if(FLAGS.is_run_cvae == True):
       dnn.run_cvae(os.path.join(FLAGS.out_dir, 'models') , \
        lv_mdn_test, num_batches=num_batches, num_repeat=8, num_cluster=5)

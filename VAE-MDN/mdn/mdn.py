@@ -25,6 +25,9 @@ flags.DEFINE_float("lr", 1e-5, "Learning rate")
 flags.DEFINE_integer("batch_size", 1, "Batch size")
 flags.DEFINE_integer("hidden_size", 64, "VAE latent variable dimension")
 flags.DEFINE_integer("updates_per_epoch", 0, "Number of updates per epoch")
+flags.DEFINE_integer("num_test_batches", 1000, "Number of test batches")
+flags.DEFINE_string("in_featdir", "", "")
+flags.DEFINE_string("in_lvdir", "", "")
 
 def cnn_feedforward(lf, input_tensor, bn_is_training, keep_prob, reuse=False):
 
@@ -163,6 +166,16 @@ def main():
 		FLAGS.num_test_batches = 1000
 		FLAGS.in_featdir = 'data/featslist/church/' 
 		FLAGS.in_lvdir = 'data/output/church/' 
+	elif(sys.argv[1] == 'anime_face'):
+		FLAGS.updates_per_epoch = 130000 // FLAGS.batch_size
+		FLAGS.num_test_batches = 1000
+		FLAGS.in_featdir = 'data/featslist/anime_face/'
+		FLAGS.in_lvdir = 'data/output/anime_face/'
+	elif(sys.argv[1] == 'anime_face_mini'):
+		FLAGS.updates_per_epoch = 11 // FLAGS.batch_size
+		FLAGS.num_test_batches = 1
+		FLAGS.in_featdir = 'data/featslist/anime_face_mini/'
+		FLAGS.in_lvdir = 'data/output/anime_face_mini/'
 	else:
 		raise NameError('[ERROR] Incorrect dataset key')
 
@@ -173,6 +186,7 @@ def main():
 
 	#Inputs
 	lf = layer_factory()
+	tf.disable_eager_execution()
 	input_tensor = tf.placeholder(tf.float32, [FLAGS.batch_size, FLAGS.feats_height, \
 			FLAGS.feats_width, FLAGS.feats_nch])
 	output_gt_tensor = tf.placeholder(tf.float32, [FLAGS.batch_size, FLAGS.hidden_size])

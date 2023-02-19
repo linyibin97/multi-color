@@ -1,7 +1,7 @@
 import tensorflow.compat.v1 as tf
 import numpy as np
 import tf_slim
-from tensorflow.compat.v1.python.framework import tensor_shape
+# from tensorflow.python.framework import tensor_shape
 
 class layer_factory:
 
