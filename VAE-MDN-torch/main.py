@@ -67,16 +67,21 @@ def get_dirpaths(args):
     out_dir = 'data/output/lfw/'
     listdir = 'data/imglist/lfw/'
     featslistdir = 'data/featslist/lfw/'
-  if(args.dataset_key == 'anime_face_mini'):
+  elif(args.dataset_key == 'anime_face_mini'):
     out_dir = 'data/output/anime_face_mini/'
     listdir = 'data/imglist/anime_face_mini/'
     featslistdir = 'data/featslist/anime_face_mini/'
-  if(args.dataset_key == 'anime_face'):
+  elif(args.dataset_key == 'anime_face'):
     out_dir = 'data/output/anime_face/'
     listdir = 'data/imglist/anime_face/'
     featslistdir = 'data/featslist/anime_face/'
   else:
     raise NameError('[ERROR] Incorrect key: %s' % (args.dataset_key))
+
+  if not os.path.exists(out_dir): os.makedirs(out_dir)
+  if not os.path.exists(os.path.join(out_dir, 'images')): os.makedirs(os.path.join(out_dir, 'images'))
+  if not os.path.exists(os.path.join(out_dir, 'models')): os.makedirs(os.path.join(out_dir, 'models'))
+
   return out_dir, listdir, featslistdir
 
 def vae_loss(mu, logvar, pred, gt, lossweights, batchsize): 
@@ -86,7 +91,7 @@ def vae_loss(mu, logvar, pred, gt, lossweights, batchsize):
   pred = pred.view(-1, 64*64*2)
   recon_element = torch.sqrt(torch.sum(torch.mul(torch.add(gt, pred.mul(-1)).pow(2), lossweights), 1))
   recon_loss = torch.sum(recon_element).mul(1./(batchsize))
-  
+
   recon_element_l2 = torch.sqrt(torch.sum(torch.add(gt, pred.mul(-1)).pow(2), 1))
   recon_loss_l2 = torch.sum(recon_element_l2).mul(1./(batchsize))
 
@@ -106,7 +111,7 @@ def mdn_loss(gmm_params, mu, stddev, batchsize):
   z = torch.add(mu, torch.mul(eps, stddev))
   z_flat = z.repeat(1, args.nmix)
   z_flat = z_flat.view(batchsize*args.nmix, args.hiddensize)
-  gmm_mu_flat = gmm_mu.view(batchsize*args.nmix, args.hiddensize)
+  gmm_mu_flat = gmm_mu.reshape(batchsize*args.nmix, args.hiddensize)
   dist_all = torch.sqrt(torch.sum(torch.add(z_flat, gmm_mu_flat.mul(-1)).pow(2).mul(50), 1))
   dist_all = dist_all.view(batchsize, args.nmix)
   dist_min, selectids = torch.min(dist_all, 1)
@@ -149,7 +154,7 @@ def test_vae(model):
     mu, logvar, color_out = model(input_color, input_greylevel, z)
     _, _, recon_loss_l2 = \
       vae_loss(mu, logvar, color_out, input_color, lossweights, batchsize)
-    test_loss = test_loss + recon_loss_l2.data[0]
+    test_loss = test_loss + recon_loss_l2.item()
     
   test_loss = (test_loss*1.)/nbatches 
 
@@ -204,11 +209,11 @@ def train_vae(logger=None):
       loss.backward()
       optimizer.step()
 
-      train_loss = train_loss + recon_loss_l2.data[0]
+      train_loss = train_loss + recon_loss_l2.item()
 
       if(logger): 
         logger.update_plot(itr_idx, \
-          [kl_loss.data[0], recon_loss.data[0], recon_loss_l2.data[0]], \
+          [kl_loss.item(), recon_loss.item(), recon_loss_l2.item()], \
           plot_type='vae')
         itr_idx += 1
 
@@ -280,10 +285,10 @@ def train_mdn(logger=None):
 
       optimizer.step()
 
-      train_loss = train_loss + loss.data[0]
+      train_loss = train_loss + loss.item()
 
       if(logger): 
-        logger.update_plot(itr_idx, [loss.data[0], loss_l2.data[0]], plot_type='mdn')
+        logger.update_plot(itr_idx, [loss.item(), loss_l2.item()], plot_type='mdn')
         itr_idx += 1
 
     train_loss = (train_loss*1.)/(nbatches)
@@ -326,7 +331,7 @@ def divcolor():
     mdn_gmm_params = model_mdn(input_feats)
     gmm_mu, gmm_pi = get_gmm_coeffs(mdn_gmm_params)
     gmm_pi = gmm_pi.view(-1, 1)
-    gmm_mu = gmm_mu.view(-1, hiddensize)
+    gmm_mu = gmm_mu.reshape(-1, hiddensize)
 
     for j in range(batchsize):
       batch_j = np.tile(batch[j, ...].numpy(), (batchsize, 1, 1, 1))
@@ -341,7 +346,7 @@ def divcolor():
       orderid = np.argsort(\
         gmm_pi[j*nmix:(j+1)*nmix, 0].cpu().data.numpy().reshape(-1))
   
-      z = curr_mu.repeat(np.int((batchsize*1.)/nmix), 1)
+      z = curr_mu.repeat(np.int_((batchsize*1.)/nmix), 1)
 
       _, _, color_out = model_vae(input_color, input_greylevel, z, is_train=False)
 
