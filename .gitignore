@@ -8,5 +8,6 @@ result/
 __pycache__/
 /VAE-MDN/data/
 /VAE-MDN/third_party/colorization/
+/VAE-MDN-torch/data/
 /cGAN/data/
 /cINN/**/output
