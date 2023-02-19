@@ -67,6 +67,14 @@ def get_dirpaths(args):
     out_dir = 'data/output/lfw/'
     listdir = 'data/imglist/lfw/'
     featslistdir = 'data/featslist/lfw/'
+  if(args.dataset_key == 'anime_face_mini'):
+    out_dir = 'data/output/anime_face_mini/'
+    listdir = 'data/imglist/anime_face_mini/'
+    featslistdir = 'data/featslist/anime_face_mini/'
+  if(args.dataset_key == 'anime_face'):
+    out_dir = 'data/output/anime_face/'
+    listdir = 'data/imglist/anime_face/'
+    featslistdir = 'data/featslist/anime_face/'
   else:
     raise NameError('[ERROR] Incorrect key: %s' % (args.dataset_key))
   return out_dir, listdir, featslistdir
