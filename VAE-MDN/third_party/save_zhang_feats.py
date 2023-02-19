@@ -1,6 +1,6 @@
 import os
 os.environ["CUDA_VISIBLE_DEVICES"]="1"   
-import sys
+import time
 
 
 import numpy as np
@@ -22,6 +22,7 @@ def save_zhang_feats(img_fns, ext='JPEG'):
 	(H_out,W_out) = net.blobs['class8_ab'].data.shape[2:] # get output shape
 	net.blobs['Trecip'].data[...] = 6/np.log(10) # 1/T, set annealing temperature
 
+	start = time.time()
 	feats_fns = []
 	for img_fn_i, img_fn in enumerate(img_fns):
 
@@ -47,5 +48,8 @@ def save_zhang_feats(img_fns, ext='JPEG'):
 		npz_fn = img_fn.replace(ext, 'npz')
 		np.savez_compressed(npz_fn, net.blobs['conv7_3'].data)
 		feats_fns.append(npz_fn)
+
+		t = time.time()-start
+		print('(%d/%d) time:%.2f avg_time:%.2f'%(img_fn_i+1, len(img_fns), t, t/(img_fn_i+1)))
 
 	return feats_fns

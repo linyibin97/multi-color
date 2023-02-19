@@ -1,6 +1,6 @@
 import tensorflow.compat.v1 as tf
 import numpy as np
-
+import tf_slim
 from tensorflow.compat.v1.python.framework import tensor_shape
 
 class layer_factory:
@@ -27,7 +27,7 @@ class layer_factory:
 		return tf.nn.conv2d(x, W, strides=[1, stride, stride, 1], padding=padding)
 
 	def batch_norm_aiuiuc_wrapper(self, x, train_phase, name, reuse_vars):
-		output = tf.contrib.layers.batch_norm(x, \
+		output = tf_slim.batch_norm(x, \
       decay=.99, \
       is_training=train_phase, \
       scale=True,  \

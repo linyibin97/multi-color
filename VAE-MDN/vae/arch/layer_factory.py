@@ -1,7 +1,7 @@
 import tensorflow.compat.v1 as tf
 import numpy as np
 from tensorflow.python.framework import tensor_shape
-
+import tf_slim
 class layer_factory:
 
 	def __init__(self):
@@ -29,7 +29,7 @@ class layer_factory:
 		return tf.maximum(x, leak*x)
 
 	def batch_norm_aiuiuc_wrapper(self, x, train_phase, name, reuse_vars):
-		output = tf.contrib.layers.batch_norm(x, \
+		output = tf_slim.batch_norm(x, \
       decay=.99, \
       is_training=train_phase, \
       scale=True,  \
