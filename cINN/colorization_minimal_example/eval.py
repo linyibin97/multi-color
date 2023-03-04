@@ -21,7 +21,8 @@ def colorize_test_set(temp=1., postfix=0, img_folder='images'):
     temp:       Sampling temperature
     postfix:    Has to be integer. Append to file name (e.g. to make 10 diverse colorizations of test set)
     '''
-    counter = 130000
+    counter = 130000 #图片开始序号
+    if not os.path.exists(join(img_folder, str(postfix))): os.makedirs(join(img_folder, str(postfix)))
     with torch.no_grad():
         for Lab in tqdm(data.test_loader):
             Lab = Lab.cuda()
@@ -33,7 +34,8 @@ def colorize_test_set(temp=1., postfix=0, img_folder='images'):
 
             for im in rgb_gen:
                 im = np.transpose(im, (1,2,0))
-                plt.imsave(join(img_folder, '%07d.png' % (counter, postfix)), im)
+                # plt.imsave(join(img_folder, '%07d.png' % (counter, postfix)), im)
+                plt.imsave(join(img_folder, str(postfix), '%07d.png' % (counter)), im)
                 counter += 1
 
 
