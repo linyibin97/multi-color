@@ -35,12 +35,13 @@ python main_wgan.py --is_train=True --dataset anime_face --batch_size 36 --epoch
 #### 测试
 
 ```
+python main_wgan.py --is_train=False --dataset anime_face --batch_size 20
+```
+
+```
 pytorch-fid D:\anime_face\origin_train D:\03_multi-color\cGAN\wgan\result\output\anime_face\0
 ```
 
-```
-
-```
 
 | fid  | origin_val         | origin_val_256     |
 | ---- | ------------------ | ------------------ |

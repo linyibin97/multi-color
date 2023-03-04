@@ -17,6 +17,11 @@ class DataProvider(object):
         elif config.dataset == 'lsun_64':
             with open('../lsun_64/bedroom_train_valid.lst', 'r') as lstfile:
                 self.data = ['../lsun_64/bedroom_train/'+imgname for imgname in lstfile.read().split()]
+        # elif config.dataset == 'anime_face':
+        #     if config.is_train:
+        #         self.data = glob(os.path.join("D:\\anime_getchu\\anime_face_in_wild\\origin_train_64", "*.png"))
+        #     else:
+        #         self.data = glob(os.path.join("D:\\anime_getchu\\anime_face_in_wild\\origin_val_64", "*.png"))
         else:
             if config.is_train:
                 self.data = glob(os.path.join("../data", config.dataset, "train", "*.jpg"))
