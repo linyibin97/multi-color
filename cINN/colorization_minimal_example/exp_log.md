@@ -11,3 +11,8 @@ pip install FrEIA
 | 4    | 20.43843022578386  |
 | 5    | 20.46030203684819  |
 
+修改 eval.py 和 data.py 
+
+python eval.py 进行测试
+
+注意在windows系统下 dataloader 需要设置 num_workers=0
